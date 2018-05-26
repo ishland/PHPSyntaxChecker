@@ -1,15 +1,18 @@
 <?php
-$fileErrors ++;
+$fileErrors = 0;
 
 function syntaxCheck ($src = ".")
 {
     global $fileErrors;
     $dir = opendir($src);
     while (($file = readdir($dir)) !== false) {
-        if (($file != '.') && ($file != '..') && (preg_match('[*.php]', $file))) {
+        if (($file != '.') && ($file != '..')) {
+            $name = explode(".", $file);
             if (is_dir($src . '/' . $file)) {
-                checkFiles($src . '/' . $file);
+                syntaxCheck($src . '/' . $file);
             } else {
+                if (end($name) !== "php")
+                    continue;
                 $result = exec("php -l " . $src . '/' . $file);
                 if (strchr($result, "Errors parsing")) {
                     $fileErrors ++;
@@ -21,3 +24,6 @@ function syntaxCheck ($src = ".")
     }
     closedir($dir);
 }
+
+syntaxCheck();
+echo "\n{$fileErrors} syntax error(s).\n";

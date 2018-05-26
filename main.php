@@ -1,6 +1,7 @@
 <?php
+$fileErrors ++;
 
-function syntax ($src = ".")
+function syntaxCheck ($src = ".")
 {
     global $fileErrors;
     $dir = opendir($src);
